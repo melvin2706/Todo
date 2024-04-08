@@ -1,0 +1,53 @@
+{% include 'base/head.html' %}
+<body class="inner_page login">
+    <div class="full_container">
+       <div class="container">
+          <div class="center verticle_center full_height">
+             <div class="login_section">
+                <div class="logo_login">
+                   <div class="center">
+                      <img width="210" src="{{ url_for('static', filename=' images/logo/logo.png') }} " alt="#">
+                   </div>
+                </div>
+                <div class="login_form">
+                   <form>
+                      <fieldset>
+                        <div class="field">
+                            <label class="label_field">Full Name</label>
+                            <input type="text" name="name" placeholder="Full Name">
+                         </div>
+                         <div class="field">
+                            <label class="label_field">Email Address</label>
+                            <input type="email" name="email" placeholder="E-mail">
+                         </div>
+                         <div class="field">
+                            <label class="label_field">Password</label>
+                            <input type="password" name="password" placeholder="Password">
+                            <span class="text-muted ">Your password must be 8-20
+                                characters long, contain letters and numbers, and must not
+                                contain spaces, special characters, or emoji.</span>
+                         </div>
+                         <div class="field">
+                            <label class="label_field">Confirmation</label>
+                            <input type="password" name="passwordConfirmation" placeholder="Confirme Password">
+                         </div>
+                         <!-- <div class="field">
+                            <label class="label_field hidden">hidden label</label>
+                            <label class="form-check-label"><input type="checkbox" class="form-check-input"> Remember Me</label>
+                            <a class="forgot" href="">Forgotten Password?</a>
+                         </div> -->
+                         <div class="field margin_0 text-left">
+                            <label class="label_field hidden">hidden label</label>
+                            <button class="main_bt">Log In</button>
+                         </div>
+                         <div class="field m-4 text-center">
+                            <p>If you already have an account, please <a href="/login" class="text-info"><strong>Login here </strong></a></p>
+                         </div>
+                      </fieldset>
+                   </form>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+{% include 'base/foot.html' %}

@@ -1,0 +1,43 @@
+<!--include head-->
+{% include 'base/head.html' %}
+<body class="dashboard dashboard_1">
+    <div class="full_container">
+       <div class="inner_container">
+          <!-- Sidebar  -->
+          {% include 'base/sidebar.html'   %}
+          <!-- end sidebar -->
+          <!-- right content -->
+          <div id="content">
+             <!-- topbar -->
+             {% include 'base/navbar.html' %}
+             <!-- end topbar -->
+             <!-- dashboard inner -->
+             <div class="midde_cont">
+                <div class="container-fluid">
+                   <div class="row column_title">
+                      <div class="col-md-12">
+                         <div class="page_title">
+                            <h2>Dashboard</h2>
+                         </div>
+                      </div>
+                   </div>
+
+                   <!-- content section -->
+                   {% block content %}
+                    
+                   {% endblock %}
+                   <!-- graph -->
+                   
+                   <!-- end graph -->
+                   
+                </div>
+                <!-- footer -->
+             </div>
+             <!-- end dashboard inner -->
+          </div>
+       </div>
+    </div>
+
+
+<!--include foot -->
+{% include 'base/foot.html' %}

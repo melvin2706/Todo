@@ -1,0 +1,42 @@
+{% include 'base/head.html' %}
+<body class="inner_page login">
+    <div class="full_container">
+       <div class="container">
+          <div class="center verticle_center full_height">
+             <div class="login_section">
+                <div class="logo_login">
+                   <div class="center">
+                      <img width="210" src="{{ url_for('static', filename=' images/logo/logo.png') }} " alt="#">
+                   </div>
+                </div>
+                <div class="login_form">
+                   <form>
+                      <fieldset>
+                         <div class="field">
+                            <label class="label_field">Email Address</label>
+                            <input type="email" name="email" placeholder="E-mail">
+                         </div>
+                         <div class="field">
+                            <label class="label_field">Password</label>
+                            <input type="password" name="password" placeholder="Password">
+                         </div>
+                         <!-- <div class="field">
+                            <label class="label_field hidden">hidden label</label>
+                            <label class="form-check-label"><input type="checkbox" class="form-check-input"> Remember Me</label>
+                            <a class="forgot" href="">Forgotten Password?</a>
+                         </div> -->
+                         <div class="field margin_0 text-left">
+                            <label class="label_field hidden">hidden label</label>
+                            <button class="main_bt">Log In</button>
+                         </div>
+                         <div class="field m-4 text-center">
+                           <p>If you don&apos;t have an account, please <a href="/signup" class="text-info"><strong>Sign up here </strong></a></p>
+                         </div>
+                      </fieldset>
+                   </form>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+{% include 'base/foot.html' %}
