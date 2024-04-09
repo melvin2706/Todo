@@ -8,8 +8,12 @@
                  <h2 class="text-center">Delete {{task.name}} task ?</h2>
               </div>
               <div class="full price_table padding_infor_info text-center ">
-                <button type="button" class="btn btn-danger py-3 px-4">Yes</button>
-                <button type="button" class="btn btn-warning py-3 px-4">No</button>
+                <button type="button" hx-get="/deleteTask/{{task.id}}" hx-push-url="true"
+                hx-trigger="click" hx-target="body" hx-swap="innerHTML"
+                class="btn btn-danger py-3 px-4">Yes</button>
+                <button type="button" class="btn btn-warning py-3 px-4" hx-get="/tasks" hx-push-url="true"
+                hx-trigger="click" hx-target="body" hx-swap="innerHTML"
+                >No</button>
               </div>
            </div>
         </div>

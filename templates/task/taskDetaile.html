@@ -39,7 +39,7 @@
                     {# comments <!-- <a href="/deleteTask/{{task.id}}" class="btn btn-danger">
                         <span class="fa fa-trash">&ThickSpace;DELETE</span>
                     </a> -->#}
-                    <button type="button" class="btn btn-danger" hx-get="/deleteTask/{{task.id}}" hx-trigger="click" 
+                    <button type="button" class="btn btn-danger" hx-get="/delete_redirect/{{task.id}}" hx-trigger="click" 
                                  hx-swap="innerHTML" 
                                  hx-target="body" hx-push-url="true"><span class="fa fa-trash">
                                  </button>
