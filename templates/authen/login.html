@@ -6,15 +6,15 @@
              <div class="login_section">
                 <div class="logo_login">
                    <div class="center">
-                      <img width="210" src="{{ url_for('static', filename=' images/logo/logo.png') }} " alt="#">
+                      <!-- <img width="210" src="{{ url_for('static', filename=' images/logo/logo.png') }} " alt="#"> -->
                    </div>
                 </div>
                 <div class="login_form">
-                   <form>
+                   <form method="post">
                       <fieldset>
                          <div class="field">
                             <label class="label_field">Email Address</label>
-                            <input type="email" name="email" placeholder="E-mail">
+                            <input type="email" name="mail" placeholder="E-mail">
                          </div>
                          <div class="field">
                             <label class="label_field">Password</label>
@@ -25,11 +25,13 @@
                             <label class="form-check-label"><input type="checkbox" class="form-check-input"> Remember Me</label>
                             <a class="forgot" href="">Forgotten Password?</a>
                          </div> -->
-                         <div class="field margin_0 text-left">
-                            <label class="label_field hidden">hidden label</label>
-                            <button class="main_bt">Log In</button>
+                         <div class="field margin_0 text-center">
+                            <button type="submit" class="main_bt">Log In</button>
                          </div>
-                         <div class="field m-4 text-center">
+                         <div class="field text-center text-danger m-3">
+                           {{message}}
+                         </div>
+                         <div class="field m-5 text-center">
                            <p>If you don&apos;t have an account, please <a href="/signup" class="text-info"><strong>Sign up here </strong></a></p>
                          </div>
                       </fieldset>

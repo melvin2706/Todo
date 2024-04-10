@@ -1,0 +1,62 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="row d-flex justify-content-center">
+    <div class="col-md-9 ">
+        <div class="white_shd full margin_bottom_30">
+           <div class="full graph_head">
+              <div class="heading1 margin_0">
+                 <h2>user List</h2>
+              </div>
+           </div>
+           <div class="table_section padding_infor_info">
+              <div class="table-responsive-sm">
+                 <table class="table table">
+                    <thead>
+                       <tr>
+                          <th>ID</th>
+                          <th>user Name</th>
+                          <th>Description</th>
+                          <th class="text-center">Actions</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{user.id}}</td>
+                            <td>{{user.name}}</td>
+                            <td>{{user.mail}}</td>
+                            <td class="text-center">
+                              <button type="button" class="btn btn-light" hx-get="/user/{{user.id}}" hx-trigger="click" 
+                                 hx-swap="innerHTML" 
+                                 hx-target="body" hx-push-url="true"><span class="fa fa-eye text-info"></button>
+                              <!-- <a href="user/{{user.id}}"><span class="fa fa-eye text-info"></span></a> -->
+                              &ThickSpace;
+                              <!-- <a href="updateuser/{{user.id}}"><span class="fa fa-pencil text-warning"></span></a> -->
+                              <button type="button" class="btn btn-light" hx-get="/updateInfo/{{user.id}}" hx-trigger="click" 
+                                 hx-swap="innerHTML" 
+                                 hx-target="body" hx-push-url="true"><span class="fa fa-pencil text-warning"></button>
+                            </td>
+                         </tr>
+                        {% endfor %}
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+    </div>
+    <!-- <div class="col-md-3">
+        <div class="white_shd full margin_bottom_30 d-flex flex-column ">
+           <div class="full graph_head d-flex justify-content-center" style="background-color: #214162;">
+              <div class="heading1 margin_0 text-center">
+                 <h2 class="text-light">Add user</h2>
+              </div>
+           </div>
+          <button type="button" class="btn btn-light" hx-get="/adduser" hx-trigger="click" 
+                  hx-swap="innerHTML" 
+                  hx-target="body" hx-push-url="true">add user</button>
+        </div>
+    </div> -->
+</div>
+
+
+{% endblock %}
