@@ -16,27 +16,31 @@
                           <th>ID</th>
                           <th>Task Name</th>
                           <th>Description</th>
+                          <th>User</th>
                           <th class="text-center">Actions</th>
                        </tr>
                     </thead>
                     <tbody>
                         {% for task in tasks %}
-                        <tr>
-                            <td>{{task.id}}</td>
-                            <td>{{task.name|upper}}</td>
-                            <td>{{task.description|capitalize}}</td>
-                            <td class="text-center">
-                              <button type="button" class="btn btn-light" hx-get="/task/{{task.id}}" hx-trigger="click" 
-                                 hx-swap="innerHTML" 
-                                 hx-target="body" hx-push-url="true"><span class="fa fa-eye text-info"></button>
-                              <!-- <a href="task/{{task.id}}"><span class="fa fa-eye text-info"></span></a> -->
-                              &ThickSpace;
-                              <!-- <a href="updateTask/{{task.id}}"><span class="fa fa-pencil text-warning"></span></a> -->
-                              <button type="button" class="btn btn-light" hx-get="/updateTask/{{task.id}}" hx-trigger="click" 
-                                 hx-swap="innerHTML" 
-                                 hx-target="body" hx-push-url="true"><span class="fa fa-pencil text-warning"></button>
-                            </td>
-                         </tr>
+                           {% if session.username == task.user_name %}
+                              <tr>
+                                 <td>{{task.id}}</td>
+                                 <td>{{task.name|upper}}</td>
+                                 <td>{{task.description|truncate(30,True)|upper}}</td>
+                                 <td>{{task.user_name|capitalize}}</td>
+                                 <td class="text-center">
+                                 <button type="button" class="btn btn-light" hx-get="/task/{{task.id}}" hx-trigger="click" 
+                                    hx-swap="innerHTML" 
+                                    hx-target="body" hx-push-url="true"><span class="fa fa-eye text-info"></button>
+                                 <!-- <a href="task/{{task.id}}"><span class="fa fa-eye text-info"></span></a> -->
+                                 &ThickSpace;
+                                 <!-- <a href="updateTask/{{task.id}}"><span class="fa fa-pencil text-warning"></span></a> -->
+                                 <button type="button" class="btn btn-light" hx-get="/updateTask/{{task.id}}" hx-trigger="click" 
+                                    hx-swap="innerHTML" 
+                                    hx-target="body" hx-push-url="true"><span class="fa fa-pencil text-warning"></button>
+                                 </td>
+                              </tr>
+                           {% endif %}
                         {% endfor %}
                     </tbody>
                  </table>

@@ -6,7 +6,7 @@
        <div class="white_shd full margin_bottom_30">
           <div class="full graph_head">
              <div class="heading1 margin_0">
-                <h2>Task Detaile</h2>
+                <h2>Profile Details</h2>
              </div>
           </div>
           <div class="full price_table padding_infor_info">
@@ -25,6 +25,15 @@
                             <h3>User Details</h3>
                             <p><strong>mail&thinsp;&colon;&thinsp;{{user.mail}}</strong></p>
                          </div>
+                         <div class="contact_inner">
+                           <h3>Activity</h3>
+                           <p><strong>Task&thinsp;created&ThickSpace;<span class="rounded-circle bg-dark px-2 text-light">{{tasks|length}}</span></strong>&ThickSpace;&colon;&ThickSpace;</p>
+                           <ul>
+                              {% for task in tasks %}
+                                 <li class="ml-5 pt-1" hx-trigger="click" hx-get="/task/{{task.id}}" hx-swap="innerHTML" hx-target="body" hx-push-url="true">{{task.name}}</li>
+                              {% endfor %}
+                           </ul>
+                        </div>
                       </div>
                    </div>
                    <!-- profile contant section -->

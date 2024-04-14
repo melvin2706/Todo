@@ -1,7 +1,8 @@
 import sqlite3
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, session
 from database import get_db_connection
 from werkzeug.security import generate_password_hash, check_password_hash
+
 app = Flask(__name__)
 
 
@@ -10,48 +11,55 @@ app = Flask(__name__)
 def dashboard():
     return render_template('dashboard.html')
 
+
 # task list view function
 @app.route('/tasks')
 def AllTasks():
     connect = get_db_connection()
-    tasks = connect.execute('select * from task').fetchall()
+    #tasks = connect.execute('select * from task').fetchall()
+    tasks = connect.execute('select task.id, task.name, task.description, user.id as u_id, user.name as u_name  from task, user where user.id = task.id_u').fetchall()
     connect.close
     task_list = list()
     for task in tasks:
-        task_list.append({'id':task['id'], 'name':task['name'], 'description':task['description']})
-    return render_template('task/tasks.html', tasks = task_list)
+        task_list.append({'id': task['id'], 'name': task['name'], 'description': task['description'], 'user_id': task['u_id'],'user_name': task['u_name']})
+    return render_template('task/tasks.html', tasks=task_list)
+
 
 # task detaile view function
 @app.route('/task/<int:id>')
 def Task(id):
     connect = get_db_connection()
-    task = connect.execute('select * from task where id = ?',(str(id))).fetchone()
+    task = connect.execute('select * from task where id = ?', (str(id))).fetchone()
     connect.close()
-    task_detail = {'id':task['id'], 'name':task['name'], 'description':task['description']}
+    task_detail = {'id': task['id'], 'name': task['name'], 'description': task['description']}
     return render_template('task/taskDetaile.html', task=task_detail)
 
+
 # add task view function
-@app.route('/addTask', methods=['POST','GET'])
+@app.route('/addTask', methods=['POST', 'GET'])
 def addTask():
     if request.method == 'POST':
+        username = request.form['uname']
         t_name = request.form['name']
         t_description = request.form['description']
         connect = get_db_connection()
-        connect.execute("insert into task (name,description) values(?,?)", (t_name, t_description))
+        user_id = connect.execute('select id from user where name=?',(username,)).fetchone()
+        connect.execute("insert into task (name,description,id_u) values(?,?,?)", (t_name, t_description,user_id['id']))
         connect.commit()
         connect.close()
         return redirect('/tasks')
     return render_template('task/addTask.html')
 
-#delete task redirection view function
+
+# delete task redirection view function
 @app.route('/delete_redirect/<int:id>')
 def delete_redirection(id):
     connect = get_db_connection()
-    task = connect.execute('select * from task where id = ?',(str(id))).fetchone()
+    task = connect.execute('select * from task where id = ?', (str(id))).fetchone()
     connect.close()
-    task_detail = {'id':task['id'], 'name':task['name'], 'description':task['description']}
+    task_detail = {'id': task['id'], 'name': task['name'], 'description': task['description']}
     return render_template('task/deleteTask.html', task=task_detail)
-    
+
 
 # delete task view function
 @app.route('/deleteTask/<int:id>')
@@ -62,44 +70,49 @@ def deleteTask(id):
     connect.close()
     return redirect('/tasks')
 
-#update task view function
+
+# update task view function
 @app.route('/updateTask/<int:id>', methods=['POST', 'GET'])
 def updateTask(id):
     connect = get_db_connection()
-    task = connect.execute('select * from task where id = ?',(str(id))).fetchone()
+    task = connect.execute('select * from task where id = ?', (str(id))).fetchone()
     connect.close()
-    task_detail = {'id':task['id'], 'name':task['name'], 'description':task['description']}
-    if request.method =='POST':
+    task_detail = {'id': task['id'], 'name': task['name'], 'description': task['description']}
+    if request.method == 'POST':
         u_name = request.form['name']
         u_description = request.form['description']
         connect = get_db_connection()
-        connect.execute('update task set name=?, description=? where id =?',(u_name, u_description,str(id)))
+        connect.execute('update task set name=?, description=? where id =?', (u_name, u_description, str(id)))
         connect.commit()
         connect.close()
-        return redirect('/task/'+str(id))
-    return render_template('task/updateTask.html', task = task_detail)
+        return redirect('/task/' + str(id))
+    return render_template('task/updateTask.html', task=task_detail)
+
 
 # index view function which is our login view function
 @app.route('/')
-@app.route('/login', methods=['POST','GET'])
+@app.route('/login', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
         mail = request.form['mail']
         password = request.form['password']
         connect = get_db_connection()
-        user = connect.execute("select * from user where mail = ?;",(mail,)).fetchone()
+        user = connect.execute("select * from user where mail = ?;", (mail,)).fetchone()
         connect.close()
-        #user_fetched = {'id':user['id'], 'name':user['name'],'mail':user['mail'],'password':user['password']}
+        # user_fetched = {'id':user['id'], 'name':user['name'],'mail':user['mail'],'password':user['password']}
         if user:
-            if check_password_hash(user['password'],password):
+            if check_password_hash(user['password'], password):
+                session['logged_in'] = True
+                session['username'] = user['name']
                 return redirect('/dashboard')
             else:
                 return render_template('authen/login.html', message="Email and password do not match")
-            
+
     return render_template('authen/login.html')
 
-# SignUp view function 
-@app.route('/signup', methods=['POST','GET'])
+
+# SignUp view function
+@app.route('/signup', methods=['POST', 'GET'])
 def registration():
     if request.method == 'POST':
         name = request.form['name']
@@ -110,26 +123,38 @@ def registration():
             return render_template('authen/signUp.html', message="password and it's confirmation are different")
         else:
             connect = get_db_connection()
-            connect.execute("insert into user (name,mail,password) values(?,?,?)", (name, mail,generate_password_hash(password)))
+            connect.execute("insert into user (name,mail,password) values(?,?,?)",
+                            (name, mail, generate_password_hash(password)))
             connect.commit()
             connect.close()
             return redirect('/login')
     return render_template('authen/signUp.html')
+
 
 # logout view function
 @app.route('/logout')
 def logout():
     return redirect('/login')
 
+
 # user profile detail view function
 @app.route('/user/<int:id>')
 @app.route('/profile/<int:id>')
 def UserProfile(id):
     connect = get_db_connection()
-    user = connect.execute('select * from user where id = ?',(str(id))).fetchone()
+    user = connect.execute('select * from user where id = ?', (str(id))).fetchone()
+    user_task = connect.execute('select distinct task.name, task.id  from task, user where task.id_u = ?',(str(user['id']))).fetchall()
     connect.close()
-    user_detail = {'id':user['id'], 'name':user['name'],'mail':user['mail']}
-    return render_template('user/profile.html', user=user_detail)
+    session['logged_in'] = True
+    session['username'] = user['name']
+    user_task_list = list()
+    print(len(user_task))
+    for task in user_task:
+        user_task_list.append({'id':task['id'],'name':task['name']})
+        print(task['name'])
+    user_detail = {'id': user['id'], 'name': user['name'], 'mail': user['mail']}
+    return render_template('user/profile.html', user = user_detail, tasks=user_task_list)
+
 
 # users list view function
 @app.route('/users')
@@ -139,37 +164,37 @@ def allUsers():
     connect.close
     user_list = list()
     for user in users:
-        user_list.append({'id':user['id'], 'name':user['name'],'mail':user['mail']})
-    return render_template('user/users.html', users = user_list)
+        user_list.append({'id': user['id'], 'name': user['name'], 'mail': user['mail']})
+    return render_template('user/users.html', users=user_list)
 
 
 # user update view function
-@app.route("/updateInfo/<int:id>", methods=['POST','GET'])
+@app.route("/updateInfo/<int:id>", methods=['POST', 'GET'])
 def updateUserInfo(id):
     connect = get_db_connection()
-    user = connect.execute('select * from user where id = ?',(str(id))).fetchone()
+    user = connect.execute('select * from user where id = ?', (str(id))).fetchone()
     connect.close()
-    user_detail = {'id':user['id'], 'name':user['name'], 'mail':user['mail']}
-    if request.method =='POST':
+    user_detail = {'id': user['id'], 'name': user['name'], 'mail': user['mail']}
+    if request.method == 'POST':
         u_name = request.form['name']
         u_mail = request.form['mail']
         connect = get_db_connection()
-        connect.execute('update user set name=?, mail=? where id =?',(u_name,u_mail,str(id)))
+        connect.execute('update user set name=?, mail=? where id =?', (u_name, u_mail, str(id)))
         connect.commit()
         connect.close()
-        return redirect('/user/'+str(id))
-    return render_template('user/updateUser.html', user = user_detail)
+        return redirect('/user/' + str(id))
+    return render_template('user/updateUser.html', user=user_detail)
 
 
-#delete user redirection view function
+# delete user redirection view function
 @app.route('/delete_user_redirect/<int:id>')
 def delete_user_redirection(id):
     connect = get_db_connection()
-    user = connect.execute('select * from user where id = ?',(str(id))).fetchone()
+    user = connect.execute('select * from user where id = ?', (str(id))).fetchone()
     connect.close()
-    user_detail = {'id':user['id'], 'name':user['name'], 'mail':user['mail']}
+    user_detail = {'id': user['id'], 'name': user['name'], 'mail': user['mail']}
     return render_template('user/deleteUser.html', user=user_detail)
-    
+
 
 # delete user view function
 @app.route('/deleteUser/<int:id>')
@@ -181,10 +206,12 @@ def deleteUser(id):
     return redirect('/users')
 
 
-#error view function
+# error view function
 @app.route('/error')
 def error():
     return render_template('404.html')
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
+    app.secret_key = "TEST123_"
     app.run(debug=True)
